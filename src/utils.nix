@@ -42,4 +42,45 @@ rec {
     else
       func args;
 
+  removeCycles = dreamLock:
+    let
+      graph = dreamLock.generic.dependencyGraph;
+
+      nodesList =
+        lib.mapAttrsToList
+          (name: deps: { inherit name deps; })
+          graph;
+      
+      # this doesn't work since it doesn't detect transitive dependencies
+      # TODO: fix this
+      dependsOn = node1: node2:
+        builtins.elem node2.name graph."${node1.name}";
+
+    in
+    lib.recursiveUpdate dreamLock {
+      generic.dependencyGraph =
+        lib.listToAttrs
+          (map
+            (node: lib.nameValuePair node.name node.deps)
+            (removeCyclesInternal dependsOn nodesList)
+          );
+    };
+
+  removeCyclesInternal = dependsOn: nodesList:
+    let
+      result = lib.toposort dependsOn nodesList;
+    in
+      if result ? result then
+        builtins.trace (lib.attrNames result)
+        result.result
+      else
+        let
+          nodeToRemove = lib.last result.cycle;
+          nodeFrom = lib.elemAt result.cycle ((builtins.length result.cycle) - 2);
+        in
+          builtins.trace "Removing cyclic dependency: ${nodeFrom.name} -> ${nodeToRemove.name}"
+          removeCyclesInternal
+            dependsOn
+            (lib.filter (node: node.name != nodeToRemove.name) nodesList);
+
 }

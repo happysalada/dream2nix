@@ -43,6 +43,8 @@ rec {
     inherit (config) allowBuiltinFetchers;
   };
 
+  inherit utils;
+
   # the translator modules and utils for all subsystems
   translators = callPackage ./translators { inherit location; };
 

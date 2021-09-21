@@ -29,8 +29,9 @@ let
       translatorWithBin // {
         inherit subsystem type name;
         translate = args:
-          translator.translate
-            ((getSpecialArgsDefaults translator.specialArgs or {}) // args);
+          utils.removeCycles
+            (translator.translate
+              ((getSpecialArgsDefaults translator.specialArgs or {}) // args));
       };
       
 
