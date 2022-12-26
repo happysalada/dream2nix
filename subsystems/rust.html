@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">1.1.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">1.2.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">1.3.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">1.4.</strong> Translators</a></li></ol></li><li class="chapter-item expanded "><a href="../subsystems.html"><strong aria-hidden="true">2.</strong> Subsystems</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../subsystems/rust.html" class="active"><strong aria-hidden="true">2.1.</strong> Rust</a></li></ol></li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">3.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">4.</strong> Contributing</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html" class="active"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="../subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts / API</li><li class="chapter-item expanded "><a href="../intro/architecture.html"><strong aria-hidden="true">9.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../api/generic-lock.html"><strong aria-hidden="true">11.</strong> Generic Lockfile</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">12.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="../intro/fetchers.html"><strong aria-hidden="true">13.</strong> Fetchers</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">14.</strong> Builders</div></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">15.</strong> Override system</a></li><li class="chapter-item expanded affix "><li class="part-title">Correlation with nixpkgs</li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">16.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">17.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing/contributing.html"><strong aria-hidden="true">18.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">19.</strong> April - June 2022</a></li><li class="chapter-item expanded "><a href="../development-roundups/2022-july-september.html"><strong aria-hidden="true">20.</strong> July - September 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,12 +142,18 @@
 <h3 id="cargo-toml-impure"><a class="header" href="#cargo-toml-impure">cargo-toml (impure)</a></h3>
 <p>Translates a <code>Cargo.toml</code> file to a dream2nix lockfile by generating a <code>Cargo.lock</code> file first and then using <code>cargo-lock</code> translator on the generated lockfile.</p>
 <h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
-<h3 id="build-rust-package-pure-default"><a class="header" href="#build-rust-package-pure-default">build-rust-package (pure) (default)</a></h3>
+<h3 id="build-rust-package-pure"><a class="header" href="#build-rust-package-pure">build-rust-package (pure)</a></h3>
 <p>Builds a package using <code>buildRustPackage</code> from <code>nixpkgs</code>.</p>
-<h3 id="crane-ifd"><a class="header" href="#crane-ifd">crane (ifd)</a></h3>
+<h3 id="crane-ifd-default"><a class="header" href="#crane-ifd-default">crane (ifd) (default)</a></h3>
 <p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.
-This builder builds two seperate derivations, one for dependencies and the other for your crate.
+This builder builds two separate derivations, one for dependencies and the other for your crate.
 The dependencies derivation will be named <code>&lt;crate&gt;-deps</code> where <code>&lt;crate&gt;</code> is the name of the crate you are building.</p>
+<h4 id="setting-profile-and-cargo-flags"><a class="header" href="#setting-profile-and-cargo-flags">Setting profile and Cargo flags</a></h4>
+<p>This can be done via setting environment variables:</p>
+<ul>
+<li><code>cargoTestFlags</code> and <code>cargoBuildFlags</code> are passed to <code>cargo</code> invocations for <code>checkPhase</code> and <code>buildPhase</code> respectively.</li>
+<li><code>cargoTestProfile</code> and <code>cargoBuildProfile</code> are used as profiles while compiling for <code>checkPhase</code> and <code>buildPhase</code> respectively.</li>
+</ul>
 <h4 id="override-gotchas"><a class="header" href="#override-gotchas">Override gotchas</a></h4>
 <p>This builder builds two separate derivations, one for your crate's dependencies and another for your crate.
 This means that if you want to override stuff for the dependencies you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
@@ -268,15 +274,27 @@ in
   # ...
 }
 </code></pre>
+<h3 id="specifying-the-stdenv"><a class="header" href="#specifying-the-stdenv">Specifying the <code>stdenv</code></a></h3>
+<p><code>crane</code> supports specifying the <code>stdenv</code> like so:</p>
+<pre><code class="language-nix">{
+  # ...
+  packageOverrides = {
+    # change all derivations' stdenv to clangStdenv
+    &quot;^.*&quot;.set-stdenv.override = old: {stdenv = pkgs.clangStdenv;};
+  };
+  # ...
+}
+</code></pre>
+<p><code>build-rust-package</code> builder does not support specifying the <code>stdenv</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../subsystems.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../guides/getting-started-nodejs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="../extending-dream2nix.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../subsystems/python.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -285,10 +303,10 @@ in
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../subsystems.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../guides/getting-started-nodejs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="../extending-dream2nix.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../subsystems/python.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
